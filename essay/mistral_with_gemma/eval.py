@@ -19,7 +19,7 @@ from dataset import EssayDataset
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Load environment variables from .env file
-load_dotenv()
+load_dotenv(dotenv_path="/home/mimi911123/ra_model/.env")
 HF_TOKEN = os.getenv("HF_TOKEN")
 if not HF_TOKEN:
     raise ValueError("HF_TOKEN not found in .env file. Please set it to your Hugging Face API token.")

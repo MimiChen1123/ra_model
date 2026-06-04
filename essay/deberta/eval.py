@@ -274,11 +274,11 @@ def run_batch(
             alpha=alpha,
         )
         results.append({**answer, **prediction})
-        print(
-            f"[{index}/{len(answers)}] document_id={answer.get('document_id')} "
-            f"subject={subject_id} "
-            f"score={prediction['predicted_score']:.1f}"
-        )
+        # print(
+        #     f"[{index}/{len(answers)}] document_id={answer.get('document_id')} "
+        #     f"subject={subject_id} "
+        #     f"score={prediction['predicted_score']:.1f}"
+        # )
 
     output_text = json.dumps(results, ensure_ascii=False, indent=2)
     if args.output is not None:

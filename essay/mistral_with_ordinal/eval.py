@@ -133,7 +133,7 @@ def run_batch_inference(args, model, tokenizer, device, score_step):
     answers = load_answers(args.answer_json)
     results = []
 
-    for start in tqdm(range(0, len(answers), args.batch_size), desc="Processing batches"):
+    for start in tqdm(range(0, len(answers), args.batch_size), desc="Processing"):
         batch_answers = answers[start:start + args.batch_size]
         prompts = [build_prompt_from_answer(answer, subjects) for answer in batch_answers]
 

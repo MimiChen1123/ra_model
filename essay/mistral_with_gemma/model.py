@@ -6,6 +6,7 @@ from peft import prepare_model_for_kbit_training, LoraConfig, get_peft_model
 from dotenv import load_dotenv
 import os
 
+load_dotenv(dotenv_path="/home/mimi911123/ra_model/.env")
 HF_TOKEN = os.getenv("HF_TOKEN")
 if not HF_TOKEN:
     raise ValueError("HF_TOKEN not found in .env file. Please set it to your Hugging Face API token.")

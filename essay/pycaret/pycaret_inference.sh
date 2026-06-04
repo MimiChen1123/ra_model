@@ -4,24 +4,24 @@ set -euo pipefail
 # Real-world inference pipeline:
 # raw test JSON -> rubric scores -> Gemma CEFR -> word_count -> PyCaret inference
 
-conda activate gept_writing_eval
+source ~/anaconda3/bin/activate pycaret
 
 LEVEL="${LEVEL:-HI}"
 TASK_TYPE="${TASK_TYPE:-classification}"
 
-INPUT_DATA="${INPUT_DATA:-./data/${LEVEL}_test.json}"
-QUESTION_PATH="${QUESTION_PATH:-./data/${LEVEL}_train_question.json}"
+INPUT_DATA="${INPUT_DATA:-/home/mimi911123/ra_model/eval_data/HI_essay_answers.json}"
+QUESTION_PATH="${QUESTION_PATH:-/home/mimi911123/ra_model/eval_data/HI_essay_questions.json}"
 WORK_DIR="${WORK_DIR:-./output/${LEVEL}_preprocess}"
 
 GEMMA_MODEL="${GEMMA_MODEL:-google/gemma-3-12b-it}"
-MODEL_PATH="${MODEL_PATH:-./model/classification/level_${LEVEL}/ada.pkl}"
-PREDICTION_OUTPUT="${PREDICTION_OUTPUT:-./output/${LEVEL}_test_prediction.json}"
+MODEL_PATH="${MODEL_PATH:-/tmp/models/pycaret/essay/classification/level_HI/lda.pkl}"
+PREDICTION_OUTPUT="${PREDICTION_OUTPUT:-./output/${LEVEL}_prediction.json}"
 
 mkdir -p "${WORK_DIR}"
 
-RUBRIC_OUTPUT="${WORK_DIR}/${LEVEL}_test_rubric.json"
-CEFR_OUTPUT="${WORK_DIR}/${LEVEL}_test_rubric_cefr.json"
-READY_INPUT="${WORK_DIR}/${LEVEL}_test_ready.json"
+RUBRIC_OUTPUT="${WORK_DIR}/${LEVEL}_rubric.json"
+CEFR_OUTPUT="${WORK_DIR}/${LEVEL}_rubric_cefr.json"
+READY_INPUT="${WORK_DIR}/${LEVEL}_ready.json"
 
 python rubric_inference.py \
   --input "${INPUT_DATA}" \
