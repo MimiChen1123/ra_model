@@ -157,7 +157,7 @@ def main():
 
             for doc_id, pred_score, true_score in zip(doc_ids, pred.cpu().numpy(), target.cpu().numpy()):
                 predictions.append({
-                    "document_id": doc_id,
+                    "document_id": doc_id.item() if hasattr(doc_id, "item") else doc_id,
                     "predicted_score": float(pred_score),
                     "true_score": float(true_score)
                 })
