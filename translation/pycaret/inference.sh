@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-conda activate gept_writing_eval
+source ~/anaconda3/bin/activate pycaret
 
 LEVEL="${LEVEL:-HI}"
 MODEL="${MODEL:-mistralai/Mistral-7B-Instruct-v0.2}"
-INPUT_DATA="${INPUT_DATA:-./data/${LEVEL}_lttc_test.json}"
-QUESTION_DATA="${QUESTION_DATA:-./data/reference-answers/question_prompts.json}"
-CHECKPOINT="${CHECKPOINT:-./models/${LEVEL}_translation.pt}"
+INPUT_DATA="${INPUT_DATA:-/home/mimi911123/ra_model/eval_data/HI_translation_answers.json}"
+QUESTION_DATA="${QUESTION_DATA:-/home/mimi911123/ra_model/eval_data/HI_translation_questions.json}"
+CHECKPOINT="${CHECKPOINT:-/tmp/models/pycaret/translation/${LEVEL}_translation.pt}"
 OUTPUT="${OUTPUT:-./output/${LEVEL}_translation_predictions.json}"
 WORK_DIR="${WORK_DIR:-./output/${LEVEL}_translation_preprocess}"
 LLM_MODEL="${LLM_MODEL:-google/gemma-3-12b-it}"
