@@ -1,40 +1,76 @@
 import argparse
 import json
+import math
 from pathlib import Path
 
-import pandas as pd
+
+IDENTIFIER_KEYS = ("id", "document_id")
+
+
+def normalize_identifier(value):
+    if value is None:
+        return None
+    if isinstance(value, float) and math.isnan(value):
+        return None
+    return str(value)
+
+
+def get_identifier(item):
+    for key in IDENTIFIER_KEYS:
+        if key in item:
+            item_id = normalize_identifier(item[key])
+            if item_id is not None:
+                return item_id
+    return None
 
 
 def load_pseudo_labels(pseudo_labels_path: Path):
-    pseudo_labels = {}
+    pseudo_labels_by_id = {}
+    pseudo_labels_by_position = []
     with open(pseudo_labels_path, "r", encoding="utf-8") as fp:
-        for line in fp:
+        for line_number, line in enumerate(fp, start=1):
             if not line.strip():
                 continue
             item = json.loads(line.strip())
-            pseudo_labels[item["id"]] = {
+            item_id = get_identifier(item)
+            pseudo_label_item = {
                 "alignment": item.get("llm_alignment", {}).get("alignment"),
                 "pseudo_labels": item.get("llm_pseudo_labels", {}).get("pseudo_labels", []),
             }
-    return pseudo_labels
+            if item_id is not None:
+                pseudo_labels_by_id[item_id] = pseudo_label_item
+            pseudo_labels_by_position.append((line_number, item_id, pseudo_label_item))
+    return pseudo_labels_by_id, pseudo_labels_by_position
 
 
 def merge_pseudo_labels(input_path: Path, pseudo_labels_path: Path, output_path: Path) -> None:
-    pseudo_labels = load_pseudo_labels(pseudo_labels_path)
-    data = pd.read_json(input_path)
+    pseudo_labels_by_id, pseudo_labels_by_position = load_pseudo_labels(pseudo_labels_path)
+    with open(input_path, "r", encoding="utf-8") as fp:
+        data = json.load(fp)
+    if not isinstance(data, list):
+        raise ValueError(f"{input_path} must contain a JSON list.")
 
     merged_data = []
-    for _, row in data.iterrows():
-        item_id = row["id"]
-        if item_id not in pseudo_labels:
-            print(f"Warning: ID {item_id} not found in pseudo labels.")
-            continue
+    used_position_fallback = False
+    for row_index, item in enumerate(data):
+        merged_item = dict(item)
+        item_id = get_identifier(merged_item)
+        pseudo_labels_item = pseudo_labels_by_id.get(item_id) if item_id is not None else None
 
-        pseudo_labels_item = pseudo_labels[item_id]
-        merged_item = row.to_dict()
+        if pseudo_labels_item is None:
+            if row_index >= len(pseudo_labels_by_position):
+                identifier = item_id if item_id is not None else f"row {row_index + 1}"
+                print(f"Warning: {identifier} not found in pseudo labels.")
+                continue
+            _, _, pseudo_labels_item = pseudo_labels_by_position[row_index]
+            used_position_fallback = True
+
         merged_item["alignment"] = pseudo_labels_item["alignment"]
         merged_item["pseudo_labels"] = pseudo_labels_item["pseudo_labels"]
         merged_data.append(merged_item)
+
+    if used_position_fallback:
+        print("Warning: Some records were merged by row order because no matching id/document_id was available.")
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with open(output_path, "w", encoding="utf-8") as fp:
