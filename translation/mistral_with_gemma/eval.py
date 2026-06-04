@@ -24,6 +24,14 @@ if not HF_TOKEN:
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
+def score_to_class(score, min_score, score_step, num_classes):
+    idx = int(round((float(score) - min_score) / score_step))
+    return max(0, min(num_classes - 1, idx))
+
+
+def class_to_score(class_idx, min_score, score_step):
+    return float(class_idx) * score_step + min_score
+
 def parse_args():
     """Parse command-line arguments."""
     parser = ArgumentParser()
@@ -78,6 +86,24 @@ def parse_args():
         "--checkpoint",
         type=Path,
         help="Path to the trained model checkpoint (required in test mode)",
+    )
+    parser.add_argument(
+        "--min_score",
+        type=float,
+        default=0.0,
+        help="Minimum possible score for converting regression output to classes",
+    )
+    parser.add_argument(
+        "--score_step",
+        type=float,
+        default=0.5,
+        help="Score interval for converting regression output to classes",
+    )
+    parser.add_argument(
+        "--num_classes",
+        type=int,
+        default=11,
+        help="Number of score classes after discretization",
     )
     args = parser.parse_args()
 
@@ -156,9 +182,15 @@ def main():
                 pbar.set_postfix({"test_loss": f"{avg_loss:.4f}"})
 
             for doc_id, pred_score, true_score in zip(doc_ids, pred.cpu().numpy(), target.cpu().numpy()):
+                pred_class = score_to_class(
+                    pred_score,
+                    args.min_score,
+                    args.score_step,
+                    args.num_classes,
+                )
                 predictions.append({
                     "document_id": doc_id.item() if hasattr(doc_id, "item") else doc_id,
-                    "predicted_score": float(pred_score),
+                    "predicted_score": class_to_score(pred_class, args.min_score, args.score_step),
                     "true_score": float(true_score)
                 })
 

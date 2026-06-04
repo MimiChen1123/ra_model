@@ -193,10 +193,16 @@ def main():
 
             # Store predictions
             for doc_id, pred_score, true_score, subject in zip(doc_ids, pred.cpu().numpy(), target.cpu().numpy(), subjects):
+                pred_class = score_to_class(
+                    pred_score,
+                    args.min_score,
+                    args.score_step,
+                    args.num_classes,
+                )
                 predictions.append({
                     "document_id": int(doc_id),
                     "subject": subject,
-                    "predicted_score": float(pred_score),
+                    "predicted_score": class_to_score(pred_class, args.min_score, args.score_step),
                     "true_score": float(true_score)
                 })
 
