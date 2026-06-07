@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-source ~/anaconda3/bin/activate pycaret
+source ~/anaconda3/bin/activate trans
 
 LEVEL="${LEVEL:-HI}"
 MODEL="${MODEL:-mistralai/Mistral-7B-Instruct-v0.2}"

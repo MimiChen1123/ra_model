@@ -259,7 +259,7 @@ def predict_one(
 
     raw_score = float(prediction.squeeze(0).cpu().numpy().item())
     new_item["predicted_score_raw"] = raw_score
-    new_item["score_prediction"] = clamp_and_round_score(raw_score)
+    new_item["predicted_score"] = clamp_and_round_score(raw_score)
     new_item["pseudo_label_features"] = pseudo_features
     return new_item
 

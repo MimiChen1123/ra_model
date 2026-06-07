@@ -20,9 +20,9 @@ def load_data(input_path):
 
 def add_score_prediction(task_type, prediction):
     if task_type == "classification":
-        prediction["score_prediction"] = prediction["prediction_label"].astype(float)
+        prediction["predicted_score"] = prediction["prediction_label"].astype(float)
     else:
-        prediction["score_prediction"] = (
+        prediction["predicted_score"] = (
             prediction["prediction_label"]
             .clip(2, 5)
             .apply(lambda x: round(x * 2) / 2)
