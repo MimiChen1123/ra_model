@@ -21,5 +21,6 @@ def load_translation(essay_path: Path, question_path: Path):
     question = json.load(open(question_path))
     subject2question = question["subject"]
     for item in essay:
+        item["subject"] = item["subject"].strip()
         item["question"] = subject2question[item["subject"]]
     return essay

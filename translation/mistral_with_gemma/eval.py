@@ -140,6 +140,7 @@ def main():
             "level": c["level"],
             "score": c.get("score", 0),
             "id": c.get("id", i),
+            "subject": c.get("subject", "unknown")
         }
         for i, c in enumerate(essays)
     ]
@@ -172,6 +173,7 @@ def main():
             attention_mask_err = batch["attention_mask_err"].cuda()
             target = batch["score"].cuda()
             doc_ids = batch["document_id"]
+            subjects = batch["subject"]
 
             pred = model(input_ids_score=input_ids_score, input_ids_err=input_ids_err, attention_mask_score=attention_mask_score, attention_mask_err=attention_mask_err)
 
@@ -181,7 +183,7 @@ def main():
                 avg_loss = total_loss / (pbar.n + 1)
                 pbar.set_postfix({"test_loss": f"{avg_loss:.4f}"})
 
-            for doc_id, pred_score, true_score in zip(doc_ids, pred.cpu().numpy(), target.cpu().numpy()):
+            for doc_id, pred_score, true_score, subject in zip(doc_ids, pred.cpu().numpy(), target.cpu().numpy(), subjects):
                 pred_class = score_to_class(
                     pred_score,
                     args.min_score,
@@ -191,7 +193,8 @@ def main():
                 predictions.append({
                     "document_id": doc_id.item() if hasattr(doc_id, "item") else doc_id,
                     "predicted_score": class_to_score(pred_class, args.min_score, args.score_step),
-                    "true_score": float(true_score)
+                    "true_score": float(true_score),
+                    "subject": subject.item() if hasattr(subject, "item") else subject
                 })
 
     if total_loss > 0:
