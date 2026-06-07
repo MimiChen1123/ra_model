@@ -139,7 +139,7 @@ def main():
             "input": c["content"],         # translation text
             "level": c["level"],
             "score": c.get("score", 0),
-            "id": c.get("id", i),
+            "document_id": c.get("document_id", i),
             "subject": c.get("subject", "unknown")
         }
         for i, c in enumerate(essays)

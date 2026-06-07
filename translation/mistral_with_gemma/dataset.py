@@ -53,6 +53,6 @@ class TranslationDataset(Dataset):
             "attention_mask_score": tokens_score["attention_mask"].squeeze(0),
             "attention_mask_err": tokens_err["attention_mask"].squeeze(0),
             "score": torch.tensor(example["score"], dtype=torch.float),
-            "document_id": example.get("id", idx),  # For tracking in test mode if needed
+            "document_id": example.get("document_id", idx),  # For tracking in test mode if needed
             "subject": example.get("subject", "unknown")  # For potential analysis by subject
         }
