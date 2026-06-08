@@ -16,11 +16,13 @@ essay_data = []
 
 for idx, row in df.iterrows():
     document_id = idx + 1
+    seat_number = row["座位號碼"]
     subject = row["寫作卷別"]
 
     if not pd.isna(row["翻譯"]):
         translation_data.append({
             "document_id": document_id,
+            "seat_number": seat_number,
             "subject": subject,
             "content": str(row["翻譯"]),
             "level": "HI"
@@ -29,6 +31,7 @@ for idx, row in df.iterrows():
     if not pd.isna(row["作文"]):
         essay_data.append({
             "document_id": document_id,
+            "seat_number": seat_number,
             "subject": subject,
             "content": str(row["作文"]),
             "level": "HI"
