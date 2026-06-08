@@ -35,6 +35,13 @@ def score_to_class(score, min_score, score_step, num_classes):
 def class_to_score(class_idx, min_score, score_step):
     return float(class_idx) * score_step + min_score
 
+
+def batch_values_to_list(values):
+    if torch.is_tensor(values):
+        return values.cpu().tolist()
+    return list(values)
+
+
 def parse_args():
     """Parse command-line arguments."""
     parser = ArgumentParser()
@@ -144,6 +151,7 @@ def main():
             "ORGANIZATION": c["ORGANIZATION"],
             "score": c.get("score"),
             "document_id": c.get("document_id", i),
+            "seat_number": c.get("seat_number"),
             "subject": c.get("subject", "")
         }
         for i, c in enumerate(essays)
@@ -180,6 +188,7 @@ def main():
             other_feature = batch["other_feature"].to(device)
             target = batch["score"].to(device)
             doc_ids = batch["document_id"]
+            seat_numbers = batch["seat_number"]
             subjects = batch["subject"]
 
             pred = model(input_ids=input_ids, attention_mask=attention_mask, other_feature=other_feature)
@@ -192,19 +201,27 @@ def main():
                 pbar.set_postfix({"test_loss": f"{avg_loss:.4f}"})
 
             # Store predictions
-            for doc_id, pred_score, true_score, subject in zip(doc_ids, pred.cpu().numpy(), target.cpu().numpy(), subjects):
+            for seat_number, doc_id, pred_score, true_score, subject in zip(
+                seat_numbers,
+                doc_ids,
+                pred.cpu().numpy(),
+                target.cpu().numpy(),
+                subjects,
+            ):
                 pred_class = score_to_class(
                     pred_score,
                     args.min_score,
                     args.score_step,
                     args.num_classes,
                 )
-                predictions.append({
+                result = {
                     "document_id": int(doc_id),
+                    "seat_number": str(seat_number),
                     "subject": subject,
                     "predicted_score": class_to_score(pred_class, args.min_score, args.score_step),
                     "true_score": float(true_score)
-                })
+                }
+                predictions.append(result)
 
     # Compute average MSE only if we have real targets
     if total_loss > 0:

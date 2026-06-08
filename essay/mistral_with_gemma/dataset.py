@@ -62,6 +62,6 @@ class EssayDataset(Dataset):
             "other_feature": other_feature,
             "score": torch.tensor(example.get("score") or 0.0, dtype=torch.float),
             "document_id": example.get("document_id", idx),
+            "seat_number": example.get("seat_number", ""),
             "subject": example.get("subject", "")
         }
-
