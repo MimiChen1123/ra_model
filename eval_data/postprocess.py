@@ -22,7 +22,7 @@ def save_json(data, path: str):
 
 
 def validate_input_item(item: dict, idx: int):
-    required_keys = ["document_id", "subject", "predicted_score"]
+    required_keys = ["document_id", "subject", "predicted_score", "seat_number"]
 
     for key in required_keys:
         if key not in item:
@@ -43,13 +43,14 @@ def merge_predictions(input_path: str, output_path: str, version: str, level: st
 
     # 先讀取既有 output
     for idx, item in enumerate(output_data):
-        if "document_id" not in item or "subject" not in item:
-            raise ValueError(f"Output item at index {idx} missing document_id or subject.")
+        if "document_id" not in item or "subject" not in item or "seat_number" not in item:
+            raise ValueError(f"Output item at index {idx} missing required key.")
 
         document_id = item["document_id"]
         subject = item["subject"]
+        seat_number = item["seat_number"]
 
-        key = (document_id, subject)
+        key = (document_id, subject, seat_number)
         merged_map[key] = item
 
         if "scores" not in merged_map[key]:
@@ -65,13 +66,15 @@ def merge_predictions(input_path: str, output_path: str, version: str, level: st
         document_id = item["document_id"]
         subject = item["subject"]
         predicted_score = item["predicted_score"]
+        seat_number = item["seat_number"]
 
-        key = (document_id, subject)
+        key = (document_id, subject, seat_number)
 
         if key not in merged_map:
             merged_map[key] = {
                 "document_id": document_id,
                 "subject": subject,
+                "seat_number": seat_number,
                 "level": level,
                 "scores": {}
             }
@@ -81,7 +84,7 @@ def merge_predictions(input_path: str, output_path: str, version: str, level: st
 
     merged_data = list(merged_map.values())
 
-    merged_data.sort(key=lambda x: (x["document_id"], x["subject"]))
+    merged_data.sort(key=lambda x: (x["document_id"], x["subject"], x["seat_number"]))
 
     save_json(merged_data, output_path)
 

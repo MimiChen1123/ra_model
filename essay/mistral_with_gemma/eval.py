@@ -151,7 +151,7 @@ def main():
             "ORGANIZATION": c["ORGANIZATION"],
             "score": c.get("score"),
             "document_id": c.get("document_id", i),
-            "seat_number": c.get("seat_number"),
+            "seat_number": c.get("seat_number", ""),
             "subject": c.get("subject", "")
         }
         for i, c in enumerate(essays)

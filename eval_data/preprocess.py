@@ -37,8 +37,8 @@ for idx, row in df.iterrows():
             "level": "HI"
         })
 
-with open("translation.json", "w", encoding="utf-8") as f:
+with open("HI_translation_answers.json", "w", encoding="utf-8") as f:
     json.dump(translation_data, f, ensure_ascii=False, indent=4)
 
-with open("essay.json", "w", encoding="utf-8") as f:
+with open("HI_essay_answers.json", "w", encoding="utf-8") as f:
     json.dump(essay_data, f, ensure_ascii=False, indent=4)
