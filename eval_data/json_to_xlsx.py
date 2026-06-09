@@ -10,11 +10,9 @@ import pandas as pd
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_ESSAY_INPUT = PROJECT_ROOT / "essay/result/merged_essay_predictions.json"
-DEFAULT_TRANSLATION_INPUT = PROJECT_ROOT / "translation/result/merged_translation_predictions.json"
-DEFAULT_OUTPUT = PROJECT_ROOT / "result_predictions.xlsx"
 
-COMMON_COLUMNS = ["document_id", "seat_number", "subject", "level"]
+COMMON_COLUMNS = ["seat_number", "subject", "level"]
+EXCLUDED_COLUMNS = {"document_id"}
 ESSAY_MODEL_COLUMNS = [
     "deberta",
     "mistral_with_ordinal",
@@ -36,7 +34,11 @@ def load_predictions(input_path: Path, model_columns: list[str]) -> pd.DataFrame
 
     preferred_columns = COMMON_COLUMNS + model_columns
     existing_preferred = [column for column in preferred_columns if column in df.columns]
-    remaining_columns = [column for column in df.columns if column not in existing_preferred]
+    remaining_columns = [
+        column
+        for column in df.columns
+        if column not in existing_preferred and column not in EXCLUDED_COLUMNS
+    ]
     df = df[existing_preferred + remaining_columns]
     return df.rename(columns=COLUMN_RENAMES)
 
@@ -59,14 +61,15 @@ def main() -> None:
     parser = argparse.ArgumentParser(
         description="Convert essay and translation prediction JSON files to one XLSX."
     )
-    parser.add_argument("essay_input", nargs="?", type=Path, default=DEFAULT_ESSAY_INPUT)
+    
+    parser.add_argument("--essay_input", type=str, default="./output/essay_predictions.json", help="Input JSON file for essay predictions.")
     parser.add_argument(
-        "translation_input",
-        nargs="?",
-        type=Path,
-        default=DEFAULT_TRANSLATION_INPUT,
+        "--translation_input",
+        type=str,
+        default="./output/translation_predictions.json",
+        help="Input JSON file for translation predictions."
     )
-    parser.add_argument("output", nargs="?", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument("--output", type=str, default="./output/students_predictions.xlsx", help="Output XLSX file.")
     args = parser.parse_args()
 
     convert(args.essay_input, args.translation_input, args.output)

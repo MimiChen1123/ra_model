@@ -89,6 +89,7 @@ def merge_predictions(input_path: str, output_path: str, version: str, level: st
     save_json(merged_data, output_path)
 
     print(f"已合併 {len(input_data)} 筆資料")
+    print(f"目前總共有 {len(merged_data)} 筆資料")
     print(f"level：{level}")
     print(f"版本名稱：{version}")
     print(f"輸出檔案：{output_path}")
