@@ -41,18 +41,18 @@ python postprocess.py \
     --level ${LEVEL}
 
 echo "======== Translation Predictions ========"
-echo "======== Mistral with Gemma Predictions ========"
+echo "======== Mistral Predictions ========"
 python postprocess.py \
-    --input /home/mimi911123/ra_model/translation/mistral_with_gemma/outputs/HI_eval/predictions.json \
+    --input /home/mimi911123/ra_model/translation/mistral/outputs/HI_eval/predictions.json \
     --output ${TRANSLATION_OUTPUT} \
-    --version mistral_with_gemma \
+    --version mistral \
     --level ${LEVEL}
 
-echo "======== PyCaret Predictions ========"
+echo "======== Mistral with Gemma Predictions ========"
 python postprocess.py \
-    --input /home/mimi911123/ra_model/translation/pycaret/output/HI_translation_predictions.json \
+    --input /home/mimi911123/ra_model/translation/mistral_with_gemma/output/HI_translation_predictions.json \
     --output ${TRANSLATION_OUTPUT} \
-    --version pycaret \
+    --version mistral_with_gemma \
     --level ${LEVEL}
 
 

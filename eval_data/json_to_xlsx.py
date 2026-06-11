@@ -19,7 +19,7 @@ ESSAY_MODEL_COLUMNS = [
     "mistral_with_gemma",
     "pycaret",
 ]
-TRANSLATION_MODEL_COLUMNS = ["mistral_with_gemma", "pycaret"]
+TRANSLATION_MODEL_COLUMNS = ["mistral", "mistral_with_gemma"]
 COLUMN_RENAMES = {
     "seat_number": "座位號碼",
     "subject": "寫作卷別",
