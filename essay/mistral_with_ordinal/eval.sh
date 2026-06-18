@@ -17,9 +17,9 @@ ANSWERS="${ANSWERS:-${DATA_DIR}/${LEVEL}_essay_answers.json}"
 OUTPUT="${OUTPUT:-${OUTPUT_DIR}/${LEVEL}_prediction.json}"
 
 if [[ "${LEVEL}" == "I" ]]; then
-    DEFAULT_CHECKPOINT="/tmp/models/mistral_ordinal/model_I.pt"
+    DEFAULT_CHECKPOINT="/tmp/models/essay/mistral_with_ordinal/model_I.pt"
 elif [[ "${LEVEL}" == "HI" ]]; then
-    DEFAULT_CHECKPOINT="/tmp/models/mistral_ordinal/model_HI.pt"
+    DEFAULT_CHECKPOINT="/tmp/models/essay/mistral_with_ordinal/model_HI.pt"
 else
     echo "LEVEL must be I or HI, got: ${LEVEL}" >&2
     exit 1
