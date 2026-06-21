@@ -38,7 +38,5 @@ class MistralWithOrdinalRegression(nn.Module):
             return_dict=True,
         )
         last_hidden = outputs.hidden_states[-1]
-        last_token_indices = attention_mask.sum(dim=1) - 1
-        batch_indices = torch.arange(last_hidden.size(0), device=last_hidden.device)
-        cls_hidden = last_hidden[batch_indices, last_token_indices, :]
+        cls_hidden = last_hidden[:, -1, :]
         return self.ordinal_head(cls_hidden)
