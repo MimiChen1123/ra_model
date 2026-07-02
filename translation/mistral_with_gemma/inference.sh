@@ -10,7 +10,8 @@ QUESTION_DATA="${QUESTION_DATA:-/home/mimi911123/ra_model/eval_data/HI_translati
 CHECKPOINT="${CHECKPOINT:-/tmp/models/mistral_with_gemma/translation/${LEVEL}_translation.pt}"
 OUTPUT="${OUTPUT:-./output/${LEVEL}_translation_predictions.json}"
 WORK_DIR="${WORK_DIR:-./output/${LEVEL}_translation_preprocess}"
-LLM_MODEL="${LLM_MODEL:-google/gemma-3-12b-it}"
+# LLM_MODEL="${LLM_MODEL:-google/gemma-3-12b-it}"
+LLM_MODEL="${LLM_MODEL:-google/gemma-4-31B-it}"
 
 ALIGNMENT_OUTPUT="${ALIGNMENT_OUTPUT:-${WORK_DIR}/${LEVEL}_alignment.jsonl}"
 PSEUDO_LABEL_OUTPUT="${PSEUDO_LABEL_OUTPUT:-${WORK_DIR}/${LEVEL}_pseudo_labels.jsonl}"
