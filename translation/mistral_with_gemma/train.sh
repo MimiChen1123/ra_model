@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-conda activate gept_writing_eval
+source ~/anaconda3/bin/activate gemma
 
 LEVEL="${LEVEL:-HI}"
 MODEL="${MODEL:-mistralai/Mistral-7B-Instruct-v0.2}"
