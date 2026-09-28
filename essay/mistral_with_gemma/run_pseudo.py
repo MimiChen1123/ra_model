@@ -227,6 +227,7 @@ def run_inference(
             content: str = (item.get("content") or "").strip()
             new_item = dict(item)
             new_item["word_count"] = count_words(content)
+            item_level = str(item.get("level") or level).strip().upper()
 
             if not content:
                 new_item["cefr_prediction"] = None
@@ -241,7 +242,7 @@ def run_inference(
                 rubric_user_prompt = build_rubric_prompt(
                     subject_text=subject_text,
                     content=content,
-                    level=level,
+                    level=item_level,
                 )
                 rubric_resp = chat_once(
                     client=client,
